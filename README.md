@@ -1,4 +1,4 @@
-# Secure Data Vault
+# Vesta-Data-Analysis-AI
 
 build a website using this | Layer                   | Recommended technology                                                                                     | Reason                                                                                                                                                                                                          |
 
@@ -26,18 +26,12 @@ build a website using this | Layer                   | Recommended technology   
 
 | Deployment              | Docker containers behind a reverse proxy, with separate API and worker services                            | Allows resource limits, isolated workers, independent scaling, and safer cleanup.                                                                                                                               and add a feature called vault in which when user loggins his database must close after termination of session and a copy of the report of the analysis must be safed which must be accesssible only by the user by enterring the correct password on vault user must be able to set his own password
 
-This project was built with [Lovable](https://lovable.dev).
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/f3e8c872-c31c-4c89-b811-3b0f0502ffeb).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
+- **Full ownership**: this code is yours. Push to `main` on GitHub
+-  
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
