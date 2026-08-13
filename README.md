@@ -1,42 +1,66 @@
 # Vesta-Data-Analysis-AI
 
-build a website using this | Layer                   | Recommended technology                                                                                     | Reason                                                                                                                                                                                                          |
+# Secure Analytics & Vault Platform
 
-| ----------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+A high-performance, privacy-focused data profiling, statistical analysis, and report generation platform. Built with a decoupled **React + FastAPI** architecture, asynchronous **Celery/Redis** task queues, and zero-knowledge ciphertext storage via a dedicated **Encrypted Vault**.
 
-| Frontend                | **React + TypeScript + Vite**                                                                              | A clean independent frontend that can connect to any documented backend API.                                                                                                                                    |
+---
 
-| UI and charts           | Tailwind CSS plus Apache ECharts or Plotly.js                                                              | Suitable for interactive dashboards, tables, filters, and automatically selected visualizations.                                                                                                                |
+## 📸 Key Features
 
-| API backend             | **Python + FastAPI**                                                                                       | Strong fit for file APIs, authentication, typed request/response schemas, and Python analytics integration.                                                                                                     |
+* **Advanced Analytics Engine**: High-speed dataset profiling, statistical testing, forecasting, and machine learning powered by Polars, DuckDB, and scikit-learn.
+* **Interactive Dashboards**: Dynamic charts, data tables, and filtering powered by Tailwind CSS, Apache ECharts, and Plotly.js.
+* **Async Job Processing**: Offloaded long-running analysis tasks using Celery workers to prevent API blocking.
+* **🔒 Secure Vault**: Zero-exposure user-managed encrypted vault for report retention.
+  * **Session Auto-Termination**: Database session contexts and temporary processing buffers are immediately wiped upon session logout or termination.
+  * **Zero-Knowledge Ciphertext**: Analysis reports are encrypted prior to private storage.
+  * **User-Managed Encryption Passwords**: Vault reports can only be unlocked by supplying the user's custom vault password.
 
-| Job queue               | **Celery + Redis initially**                                                                               | Long-running analytics should not run inside API request processes. FastAPI itself recommends larger task-queue tools for heavy work, while Celery distributes tasks to worker processes or machines \[1] \[2]. |
+---
 
-| Analytics workers       | **Python, Polars, DuckDB, PyArrow, pandas, SciPy, statsmodels, and scikit-learn**                          | Supports large tabular files, data profiling, statistical analysis, forecasting, and machine learning.                                                                                                          |
+## 🛠️ Technology Stack Architecture
 
-| Excel ingestion         | Polars with appropriate Excel engines, supplemented by openpyxl when workbook-specific features require it | Polars documents Excel ingestion through external engines rather than a single native reader \[3].                                                                                                              |
+| Layer | Recommended Technology | Purpose & Architectural Justification |
+| :--- | :--- | :--- |
+| **Frontend** | React + TypeScript + Vite | Clean, fast, component-driven UI connecting to stateless REST APIs. |
+| **UI & Visualizations** | Tailwind CSS + Apache ECharts / Plotly.js | Interactive dashboards, filtering, responsive tables, and automatic chart generation. |
+| **API Backend** | Python + FastAPI | Typed request/response schemas, high-concurrency file handling, and native Python analytics integration. |
+| **Job Queue** | Celery + Redis | Asynchronous background worker orchestration to keep API request handling lightweight. |
+| **Analytics Workers** | Polars, DuckDB, PyArrow, pandas, SciPy, statsmodels, scikit-learn | Scalable tabular ingestion, fast query execution, data profiling, statistical analysis, and ML modeling. |
+| **Excel Ingestion** | Polars + openpyxl engine | High-throughput Excel spreadsheet ingestion using external parsing engines. |
+| **Database** | PostgreSQL | Manages user accounts, active sessions, job states, metadata, salts, and audit trails *(never stores raw datasets)*. |
+| **Temporary File Storage** | S3-compatible Object Storage (Temp Bucket) | Handles large dataset uploads; cleared immediately post-analysis with S3 lifecycle expiration backup. |
+| **Encrypted Vault Storage** | Private S3 Bucket (Vault) | Securely stores encrypted report ciphertext and non-sensitive metadata. |
+| **Report Generation** | WeasyPrint / ReportLab + Plotly / Matplotlib | Produces structured, publication-ready PDF reports and charts. |
+| **Deployment** | Docker + Reverse Proxy (Nginx/Traefik) | Isolated containers for API and worker services with independent scaling and resource limits. |
 
-| Database                | **PostgreSQL**                                                                                             | Stores accounts, sessions, job state, report metadata, salts, non-sensitive settings, and audit events—not dataset contents.                                                                                    |
+---
 
-| Temporary file storage  | S3-compatible object storage with a dedicated temporary bucket                                             | Handles large uploads without routing every byte through the API server. Application cleanup should run immediately, with lifecycle expiration as a secondary safety net \[4].                                  |
+## 🔐 The "Vault" Security Architecture
 
-| Encrypted vault storage | Separate private object-storage bucket                                                                     | Stores only encrypted report ciphertext and non-sensitive metadata.                                                                                                                                             |
+The **Vault** is designed to guarantee data privacy and isolate user analytical reports even if underlying session states are compromised.
 
-| Report generation       | WeasyPrint or ReportLab for structured PDFs; Plotly or Matplotlib for report charts                        | Produces professional, consistent PDF output.                                                                                                                                                                   |
+## 📁 Repository Structure
 
-| Deployment              | Docker containers behind a reverse proxy, with separate API and worker services                            | Allows resource limits, isolated workers, independent scaling, and safer cleanup.                                                                                                                               and add a feature called vault in which when user loggins his database must close after termination of session and a copy of the report of the analysis must be safed which must be accesssible only by the user by enterring the correct password on vault user must be able to set his own password
+```text
+.
+├── apps/
+│   ├── web/                  # React + TypeScript + Vite Frontend
+│   │   ├── src/
+│   │   │   ├── components/   # UI Components & ECharts Integration
+│   │   │   ├── features/     # Vault, Analytics, & Auth Modules
+│   │   │   └── pages/        # Application Routes
+│   │   └── package.json
+│   └── api/                  # FastAPI Backend & Celery Workers
+│       ├── app/
+│       │   ├── api/          # FastAPI Route Controllers
+│       │   ├── core/         # Security, Vault Encryption, Configs
+│       │   ├── db/           # PostgreSQL Schema & Sessions
+│       │   ├── services/     # Polars/DuckDB Analytics Pipeline
+│       │   └── worker/       # Celery Task Definitions
+│       └── Requirements.txt
+├── docker/                   # Dockerfiles & Reverse Proxy Configs
+├── docker-compose.yml        # Orchestration (API, Workers, Redis, Postgres, S3 Mock)
+└── README.md
 
-
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub
--  
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+What Makes This Project Unique?1. Zero-Knowledge "Vault" ArchitectureMost analytics platforms generate PDF or HTML reports and store them directly in plain database rows or cloud buckets, making them accessible to system admins, cloud operators, or potential database leaks.Your Platform: Stores report payloads inside an Encrypted Vault Bucket using zero-knowledge client-side encryption (AES-256-GCM / Argon2id).  No Centralized Decryption Key: The backend server never stores the user's Vault key. Even if your database and S3 buckets are completely leaked, the attacker sees only raw ciphertext.  2. Automatic Ephemeral Staging & Instant CleanupTraditional data analysis web apps often leave raw customer datasets hanging in /tmp folders or database staging tables long after the report is produced.Your Platform: Uses ephemeral ingestion. Dataset files are placed in a temporary S3 bucket only for the duration of the analysis task. Once the Celery worker finishes generating the report, it issues an immediate memory flush and storage purge.3. Decoupled Compute & API ExecutionRunning heavy data manipulation (Polars, pandas, scikit-learn) inside standard FastAPI request handlers will freeze the server, causing request timeouts for other users.Your Platform: Unlinks heavy computation from HTTP handling using an asynchronous Celery + Redis task-distribution queue. The API remains lighting-fast while compute-heavy worker nodes scale independently across CPU/GPU instances.
